@@ -14,7 +14,7 @@ import android.widget.Toast;
  * Created by jang on 2017. 8. 20..
  */
 
-public class CropFragment extends Fragment implements View.OnClickListener, CropContract.view {
+public class CropFragment extends Fragment implements View.OnClickListener{
     Uri picture;
     CropImageView cropImageView;
 
@@ -39,10 +39,14 @@ public class CropFragment extends Fragment implements View.OnClickListener, Crop
         view.findViewById(R.id.button_complete).setOnClickListener(this);
         if (getArguments() != null) {
             picture = getArguments().getParcelable("picture");
-            cropImageView.setImageURI(picture);
-            //Glide.with(context).load(picture).into(cropImageView);
-            cropImageView.setCropMode(CropImageView.CropMode.FREE);
-            cropImageView.rotateImage(CropImageView.RotateDegrees.ROTATE_90D);
+            if(picture!=null) {
+                cropImageView.setImageURI(picture);
+                //Glide.with(context).load(picture).into(cropImageView);
+                cropImageView.setCropMode(CropImageView.CropMode.FREE);
+                cropImageView.rotateImage(CropImageView.RotateDegrees.ROTATE_90D);
+            }else {
+                getActivity().onBackPressed();
+            }
         }
 
         return view;
@@ -59,16 +63,16 @@ public class CropFragment extends Fragment implements View.OnClickListener, Crop
                 cropImageView.rotateImage(CropImageView.RotateDegrees.ROTATE_90D);
                 break;
             case R.id.button_complete:
-                //FIXME:일단 crop기능으로
                 cropImageView.cropAsync(picture, new CropImageView.Callback() {
                     @Override
                     public void onError(Throwable e) {
+                        e.printStackTrace();
                         Toast.makeText(getActivity(), "Error during on Crop", Toast.LENGTH_SHORT).show();
                     }
 
                     @Override
                     public void onSuccessCrop(Bitmap cropped) {
-                        cropImageView.setImageBitmap(cropped);
+                        ((MainActivity)getActivity()).moveToPaintFragment(cropped);
                     }
                 });
                 break;

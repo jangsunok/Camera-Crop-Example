@@ -34,8 +34,11 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.logging.Logger;
 
+import static android.graphics.Bitmap.createBitmap;
+
 /**
  * Created by jang on 2017. 8. 20..
+ * https://github.com/IsseiAoki/SimpleCropView
  */
 
 public class CropImageView extends ImageView {
@@ -77,7 +80,6 @@ public class CropImageView extends ImageView {
     private Paint mPaintBitmap;
     private Paint mPaintDebug;
     private RectF mFrameRect;
-    private RectF mInitialFrameRect;
     private RectF mImageRect;
     private PointF mCenter = new PointF();
     private float mLastX, mLastY;
@@ -430,7 +432,7 @@ public class CropImageView extends ImageView {
         canvas.drawLine(left - startOffset, bottom + lateralOffset, left + mCornerLength, bottom + lateralOffset, mCornerPaint);
         canvas.drawLine(right + lateralOffset, bottom + startOffset, right + lateralOffset, bottom - mCornerLength, mCornerPaint);
         canvas.drawLine(right + startOffset, bottom + lateralOffset, right - mCornerLength, bottom + lateralOffset, mCornerPaint);
-  }
+    }
 
 
     public Paint newCornerPaint(float cornerThickness) {
@@ -457,13 +459,7 @@ public class CropImageView extends ImageView {
         setScale(calcScale(viewW, viewH, mAngle));
         setMatrix();
         mImageRect = calcImageRect(new RectF(0f, 0f, mImgWidth, mImgHeight), mMatrix);
-
-        if (mInitialFrameRect != null) {
-            mFrameRect = applyInitialFrameRect(mInitialFrameRect);
-        } else {
-            mFrameRect = calcFrameRect(mImageRect);
-        }
-
+        mFrameRect = calcFrameRect(mImageRect);
         mIsInitialized = true;
         invalidate();
     }
@@ -1113,7 +1109,7 @@ public class CropImageView extends ImageView {
                 cropped = rotated;
             }
         } finally {
-            CropUtils.closeQuietly(is);
+            closeQuietly(is);
         }
         return cropped;
     }
@@ -1161,7 +1157,7 @@ public class CropImageView extends ImageView {
         }
 
         if (outWidth > 0 && outHeight > 0) {
-            Bitmap scaled = CropUtils.getScaledBitmap(cropped, outWidth, outHeight);
+            Bitmap scaled = getScaledBitmap(cropped, outWidth, outHeight);
             if (cropped != getBitmap() && cropped != scaled) {
                 cropped.recycle();
             }
@@ -1251,33 +1247,6 @@ public class CropImageView extends ImageView {
         mAngle = mExifRotation;
     }
 
-    /**
-     * Load image from Uri with Builder Pattern
-     *
-     * @param sourceUri Image Uri
-     * @return Builder
-     */
-//    public LoadRequest load(Uri sourceUri) {
-//        return new LoadRequest(this, sourceUri);
-//    }
-    private Bitmap getImage(Uri sourceUri) {
-
-        if (sourceUri == null) {
-            throw new IllegalStateException("Source Uri must not be null.");
-        }
-
-        mExifRotation = CropUtils.getExifOrientation(getContext(), mSourceUri);
-        int maxSize = CropUtils.getMaxSize();
-        int requestSize = Math.max(mViewWidth, mViewHeight);
-        if (requestSize == 0) requestSize = maxSize;
-
-        final Bitmap sampledBitmap =
-                CropUtils.decodeSampledBitmapFromUri(getContext(), mSourceUri, requestSize);
-        mInputImageWidth = CropUtils.sInputImageWidth;
-        mInputImageHeight = CropUtils.sInputImageHeight;
-        return sampledBitmap;
-    }
-
 
     /**
      * Rotate image
@@ -1352,6 +1321,7 @@ public class CropImageView extends ImageView {
         });
     }
 
+
     private Bitmap cropImage() throws IOException, IllegalStateException {
         Bitmap cropped;
 
@@ -1371,28 +1341,6 @@ public class CropImageView extends ImageView {
         return cropped;
     }
 
-
-    /**
-     * Get frame position relative to the source bitmap.
-     *
-     * @return getCroppedBitmap area boundaries.
-     * //     * @see #load(Uri)
-     * //     * @see #loadAsync(Uri, boolean, RectF, LoadCallback)
-     * //     * @see #loadAsCompletable(Uri, boolean, RectF)
-     */
-    public RectF getActualCropRect() {
-        float offsetX = (mImageRect.left / mScale);
-        float offsetY = (mImageRect.top / mScale);
-        float l = (mFrameRect.left / mScale) - offsetX;
-        float t = (mFrameRect.top / mScale) - offsetY;
-        float r = (mFrameRect.right / mScale) - offsetX;
-        float b = (mFrameRect.bottom / mScale) - offsetY;
-        l = Math.max(0, l);
-        t = Math.max(0, t);
-        r = Math.min(mImageRect.right / mScale, r);
-        b = Math.min(mImageRect.bottom / mScale, b);
-        return new RectF(l, t, r, b);
-    }
 
     private RectF applyInitialFrameRect(RectF initialFrameRect) {
         RectF frameRect = new RectF();
@@ -1882,6 +1830,16 @@ public class CropImageView extends ImageView {
                 return new SavedState[inSize];
             }
         };
+    }
+
+
+    public Bitmap getScaledBitmap(Bitmap bitmap, int outWidth, int outHeight) {
+        int currentWidth = bitmap.getWidth();
+        int currentHeight = bitmap.getHeight();
+        Matrix scaleMatrix = new Matrix();
+        scaleMatrix.postScale((float) outWidth / (float) currentWidth,
+                (float) outHeight / (float) currentHeight);
+        return createBitmap(bitmap, 0, 0, currentWidth, currentHeight, scaleMatrix, true);
     }
 
 

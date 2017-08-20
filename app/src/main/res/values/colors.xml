@@ -4,10 +4,22 @@
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#FF4081</color>
     <color name="white">#FFFFFF</color>
+    <color name="white_op">#E5FFFFFF</color>
 
     <dimen name="corner_thickness">4dp</dimen>
     <dimen name="border_thickness">2dp</dimen>
     <dimen name="corner_length">25dp</dimen>
     <color name="corner">@color/colorAccent</color>
+
+    <color name="black">#000000</color>
+    <color name="yellow">#f8e81c</color>
+    <color name="blue">#237cff</color>
+    <color name="purple">#d500f9</color>
+
+    <color name="green_op">#401bc15c</color>
+    <color name="yellow_op">#4Df8e81c</color>
+    <color name="blue_op">#4D237cff</color>
+    <color name="purple_op">#40d500f9</color>
+
 
 </resources>

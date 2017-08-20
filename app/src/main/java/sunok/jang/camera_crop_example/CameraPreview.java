@@ -117,12 +117,9 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
         Camera.Parameters cameraParameters = mCamera.getParameters();
         setTouchToFocusMode(cameraParameters);
         Rect focusArea = calculateFocusArea(event);
-        //TODO draw focus rectangle
         if(cameraTouchEventView!=null){
             cameraTouchEventView.drawTouchEvent(focusArea);
-
         }
-
         ArrayList<Camera.Area> focusAreas = new ArrayList<>();
         focusAreas.add(new Camera.Area(focusArea, 1000));
         cameraParameters.setFocusAreas(focusAreas);

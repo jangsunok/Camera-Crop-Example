@@ -40,4 +40,16 @@
          <attr format="boolean" name="scv_handle_shadow_enabled"/>
     </declare-styleable>
 
+
+    <declare-styleable name="FreeDrawView">
+        <attr name="paintColor" format="color"/>
+        <attr name="paintWidth" format="dimension"/>
+        <attr name="paintAlpha" format="integer"/>
+        <attr name="resizeBehaviour" format="enum">
+            <enum name="clear" value="0"/>
+            <enum name="fitXY" value="1"/>
+            <enum name="crop" value="2"/>
+        </attr>
+    </declare-styleable>
+
 </resources>
