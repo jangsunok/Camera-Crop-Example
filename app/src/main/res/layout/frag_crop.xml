@@ -4,14 +4,15 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white"
+    android:background="#f2f2f2"
     tools:context=".MainActivity">
 
     <LinearLayout
         android:id="@+id/container_button"
         android:layout_width="match_parent"
         android:layout_height="100dp"
-        android:layout_alignParentBottom="true">
+        android:layout_alignParentBottom="true"
+        android:background="@color/white">
 
 
         <Button
@@ -43,22 +44,17 @@
     </LinearLayout>
 
 
-    <FrameLayout
-        android:id="@+id/camera_preview"
+    <sunok.jang.camera_crop_example.CropImageView
+        android:id="@+id/container_crop"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_above="@id/container_button"
-        android:layout_weight="1" />
-
-
-    <FrameLayout
-        android:id="@+id/conatiner"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_above="@id/container_button"
-        android:layout_weight="1" />
-
-
+        android:layout_marginBottom="30dp"
+        android:layout_marginLeft="22dp"
+        android:layout_marginRight="22dp"
+        android:layout_marginTop="30dp"
+        android:layout_weight="1"
+        android:padding="4dp" />
 
 
 </RelativeLayout>

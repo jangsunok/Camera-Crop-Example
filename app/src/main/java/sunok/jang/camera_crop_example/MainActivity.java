@@ -46,6 +46,20 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
+    public void moveToCropFragment(Uri uri) {
+        if (cropFragment == null) {
+            cropFragment = CropFragment.newInstance(uri);
+        }
+        if (page != PAGE_CROP) {
+            page = PAGE_CROP;
+            getFragmentManager().beginTransaction()
+                    .replace(R.id.frame, cropFragment)
+                    .commit();
+        }
+
+    }
+
+
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         switch (requestCode) {
@@ -58,7 +72,6 @@ public class MainActivity extends AppCompatActivity {
                 super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         }
     }
-
 
 
     public void setupToolbar(Toolbar toolbar) {
@@ -77,16 +90,13 @@ public class MainActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    public void moveToCropFragment(Uri uri) {
-        if (cropFragment == null) {
-            cropFragment = CropFragment.newInstance(uri);
-        }
-        if (page != PAGE_CROP) {
-            page = PAGE_CROP;
-            getFragmentManager().beginTransaction()
-                    .replace(R.id.frame, cropFragment)
-                    .commit();
-        }
 
+    @Override
+    public void onBackPressed() {
+        if (page == PAGE_CROP) {
+            moveToCameraFragment();
+        } else {
+            super.onBackPressed();
+        }
     }
 }

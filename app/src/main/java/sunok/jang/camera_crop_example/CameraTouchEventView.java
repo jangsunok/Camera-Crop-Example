@@ -19,7 +19,6 @@ import android.view.animation.Transformation;
 public class CameraTouchEventView extends View {
 
     private Rect mRect;
-    Drawable icon;
     Bitmap bitmap;
     AlphaAnimation mFadeOut;
     Paint mCharacterPaint;
@@ -38,7 +37,6 @@ public class CameraTouchEventView extends View {
 
 
     private void init(Context context) {
-        icon =  context.getResources().getDrawable(R.drawable.icn_circle_camera);
         bitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.icn_circle_camera);
     }
 
